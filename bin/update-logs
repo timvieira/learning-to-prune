@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+./bin/pull-results
+
+#for job in `echo lols9 lols10`; do
+for job in `echo lols10 lols11`; do
+for grammar in `echo medium big`; do
+
+echo -e "\033[32m==> tmp/$job-$grammar.csv <==\033[0m"
+
+./bin/frontier --target $job --accuracy evalb_corpus --runtime pushes \
+  --early-stop-dev-cheat --baseline-is-init --interpolation linear \
+  --filter "df.args_grammar=='$grammar'" --save tmp/$job-$grammar.csv
+
+echo -e "\033[32m[save] tmp/$job-$grammar.csv\033[0m"
+
+done; done
+
+### LOLS 11
+
+python -m ldp.viz.squirt --accuracy expected_recall_avg --runtime pops --data dev \
+  tmp/lols11-big.csv tmp/baseline9-big.csv
+
+python -m ldp.viz.squirt --accuracy expected_recall_avg --runtime pops --data dev \
+  tmp/lols11-medium.csv tmp/baseline9-medium.csv
+
+
+### LOLS 10
+
+python -m ldp.viz.squirt --accuracy evalb_avg --runtime pops --data dev \
+  tmp/lols10-medium.csv tmp/baseline9-medium.csv
+
+python -m ldp.viz.squirt --accuracy expected_recall_avg --runtime mask --data dev \
+  tmp/lols10-medium.csv tmp/baseline9-medium.csv
+
+python -m ldp.viz.squirt --accuracy evalb_avg --runtime pops --data dev \
+  tmp/lols10-big.csv tmp/baseline9-big.csv
+
+python -m ldp.viz.squirt --accuracy expected_recall_avg --runtime mask --data dev \
+  tmp/lols10-big.csv tmp/baseline9-big.csv
+
+### LOLS 9
+
+#python -m ldp.viz.squirt --accuracy evalb_avg --runtime pops --data dev \
+#  tmp/lols9-medium.csv tmp/baseline9-medium.csv
+
+#python -m ldp.viz.squirt --accuracy expected_recall_avg --runtime mask --data dev \
+#  tmp/lols9-medium.csv tmp/baseline9-medium.csv
+
+#python -m ldp.viz.squirt --accuracy evalb_avg --runtime pops --data dev \
+#  tmp/lols9-big.csv tmp/baseline9-big.csv
+
+#python -m ldp.viz.squirt --accuracy expected_recall_avg --runtime mask --data dev \
+#  tmp/lols9-big.csv tmp/baseline9-big.csv

@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# This script wraps a command submitted to SGE. We do this in order (a) source
+# the appropriate bash environment, (b) write the SGE jobid to a file, and (c)
+# redirect output from the command.
+#
+
+out=$1
+shift
+cmd=$@
+
+echo "Hello -- SGE job id: $JOB_ID"
+
+#echo "creating output directory $out"
+#mkdir -p $out
+echo "$JOB_ID" > $out/sge-jobid.txt
+
+date > $out/start
+hg head > $out/hg
+
+echo "Source bashrc"
+source ~/.bashrc
+#source bin/activate
+
+echo "CMD: $cmd"
+echo "CWD: `pwd -P`"
+
+echo $cmd > $out/cmd.txt
+
+echo "Runnning command"
+$cmd >& $out/cmd-stdout.txt
+
+date > $out/finish
+
+echo "Done!"

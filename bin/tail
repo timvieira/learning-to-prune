@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#
+# Dump the tail of the processes log file (i.e., cmd-stdout.txt). Script takes
+# the basename of the job as an argument. Additional arguments are passed
+# directly to tail, e.g.,
+#
+#   $ ./bin/tail searn5 -n 5
+#                 ^^^^   ^^^
+#             basename   args to tail
+#
+
+name=$1
+shift 1
+
+function red    { echo -e "\e[31m$@\e[0m"; }
+function yellow { echo -e "\e[33m$@\e[0m"; }
+function green  { echo -e "\e[32m$@\e[0m"; }
+function blue   { echo -e "\e[34m$@\e[0m"; }
+function purple { echo -e "\e[35m$@\e[0m"; }
+function cyan   { echo -e "\e[36m$@\e[0m"; }
+
+./bin/pull-results yes
+
+for d in `echo results/*-$name-*`; do
+
+f=$d/cmd-stdout.txt
+
+echo
+green "==> $f <=="
+
+grep 'DONE!' $f >/dev/null
+if [[ $? -eq 0 ]]; then
+   yellow DONE
+else
+   yellow `cat $d/cmd.txt`
+   tail $f $@
+fi
+
+done
+
+echo

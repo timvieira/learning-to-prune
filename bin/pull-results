@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+mkdir -p results
+
+function die {
+    echo "$@"
+    exit 1
+}
+
+function red    { echo -e "\e[31m$@\e[0m"; }
+function yellow { echo -e "\e[33m$@\e[0m"; }
+function green  { echo -e "\e[32m$@\e[0m"; }
+function blue   { echo -e "\e[34m$@\e[0m"; }
+function purple { echo -e "\e[35m$@\e[0m"; }
+function cyan   { echo -e "\e[36m$@\e[0m"; }
+
+cyan "==> Grabbing results from CLSP <=="
+
+function get {
+    rsync -a --progress \
+          "timv@login2.clsp.jhu.edu:/export/a11/timv/ldp/results/." results/. \
+          --exclude '.nfs*' --exclude '*searn3*' --exclude '*searn4*' --exclude '*searn5*' \
+          --exclude '*searn7*' --exclude '*baseline6*' --exclude '*baseline5*' --exclude '*searn6*' \
+          --exclude '*searn8*' --exclude '*lols8*' --exclude '*lols9*' \
+          $@ \
+          2>/dev/null || die "error: rsync failed."
+}
+
+get --exclude 'new_policy*.npz*' \
+    --exclude 'init.npz' \
+    --exclude 'cmd-stdout.txt'
+
+rsync -a --progress "timv@login2.clsp.jhu.edu:/export/a11/timv/ldp/timing-*.csv" ./.
+
+
+if [ "$1" == "yes" ]; then
+    # this version grabs cmd-stdout, but no model files.
+    get --exclude 'new_policy*.npz*' --exclude 'init.npz'
+fi
+
+if [ "$1" == "seriously" ]; then
+    # this version grabs everything, including model files.
+    get
+fi
+
+./bin/list-jobs > tmp/jobs 2>/dev/null || die "error: failed to list jobs"
+
+echo
+echo "`tail -n +3 tmp/jobs| wc -l` jobs in queue"

@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+from argparse import ArgumentParser
+p = ArgumentParser()
+p.add_argument('begin', type=float)
+p.add_argument('end', type=float)
+p.add_argument('n', type=int)
+
+args = p.parse_args()
+
+from numpy import linspace
+
+print  ' '.join(str(x) for x in linspace(args.begin, args.end, args.n))

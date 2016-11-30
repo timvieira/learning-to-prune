@@ -1,0 +1,15 @@
+What do rollouts buy us?
+
+This script runs rollouts at the final policy (judge by early stopping) to show
+that the crude labeling that our baseline method is based on is often incorrect
+or too crude.
+
+TODO: Write up how to run these jobs and do the analysis.
+
+Running experiment
+
+ - Need the result of froniter script (there are two of those,
+   e.g. tmp/lols10-big.csv and tmp/lols10-medium.csv)
+
+ - Pass each of the csv files into run_job.py also run with the --baseline
+   option.

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#
+# Regression testing. Compare results from previous versions of codebase.
+#
+
+function nocolor {
+  python -c 'import sys, re; [sys.stdout.write(re.sub("\033\[[0-9;]*m","",x)) for x in sys.stdin]'
+}
+
+./test/tests.bash > test/got
+
+cat test/expect | nocolor > test/expect.nocolor
+cat test/got    | nocolor > test/got.nocolor
+
+mv test/expect.nocolor test/expect
+mv test/got.nocolor test/got
+
+#colordiff expect got
+
+meld test/expect test/got || colordiff test/expect test/got

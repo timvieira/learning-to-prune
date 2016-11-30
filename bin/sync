@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+#rsync -a --progress ./. timv@login2.clsp.jhu.edu:~/test-virtualenv/. \
+
+CLSP=timv@login2.clsp.jhu.edu:/export/a11/timv/ldp
+#MARCC=tvieira2@jhu.edu@gateway2.marcc.jhu.edu:/home-4/tvieira2@jhu.edu/scratch
+MARCC=tvieira2@jhu.edu@login03.marcc.jhu.edu:/home-4/tvieira2@jhu.edu/scratch/ldp
+
+#DEST=$MARCC
+DEST=$CLSP
+
+function red    { echo -e "\e[31m$@\e[0m"; }
+function yellow { echo -e "\e[33m$@\e[0m"; }
+function green  { echo -e "\e[32m$@\e[0m"; }
+function blue   { echo -e "\e[34m$@\e[0m"; }
+function purple { echo -e "\e[35m$@\e[0m"; }
+function cyan   { echo -e "\e[36m$@\e[0m"; }
+
+cyan "==> syncing $LDP from $DEST <=="
+
+# sync ldp-parser code.
+rsync -a --progress ./. $DEST/. \
+    --exclude results/ \
+    --exclude 'results*' \
+    --exclude '*.pyc' \
+    --exclude '*.mp4' \
+    --exclude '*~' \
+    --exclude bin/EVALB/evalb \
+    --exclude build/ --exclude '*.so' --exclude '*.c' --exclude '*.cpp'
+
+# Note: evalb executable must be compiled with older compiler (or something like
+# that). So, we have to be careful not to copy our local version over.
+#
+# Also, note that the exclusion pattern appears to be a relative path.
+rsync -a --progress ./bin/. $DEST/bin/. \
+    --exclude bin/Anaconda-2.1.0-Linux-x86_64.sh \
+    --exclude EVALB/evalb  # must be relative path to source dir -> don't prefix with bin/EVALB/evalb
+
+# sync arsenal
+rsync -a --progress /home/timv/projects/arsenal/. $DEST/../arsenal/. \
+    --exclude '*.pyc'

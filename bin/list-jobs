@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+ssh timv@login2.clsp.jhu.edu 'qstat -u timv'
