@@ -120,7 +120,7 @@ def main():
 
     args = p.parse_args()
 
-    from arsenal.profiling.utils import profiler
+    from arsenal.profiling import profiler
     with profiler(args.profile):
         _main(args)
 

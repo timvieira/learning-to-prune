@@ -769,7 +769,7 @@ class learn(object):
 
 def main():
     from argparse import ArgumentParser
-    from arsenal.profiling.utils import profiler
+    from arsenal.profiling import profiler
 
     p = ArgumentParser()
     # output
