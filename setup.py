@@ -15,7 +15,7 @@ setup(name='ldp',
       packages=['ldp'],
       install_requires=[
           'path.py',
-          'psutil==2.1',
+          'psutil',
           'murmurhash==0.24',
           'nltk>=3.0',
       ],
